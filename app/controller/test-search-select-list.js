@@ -11,17 +11,29 @@ class TestSearchSelectListController extends Controller {
     const {
       pageSize = 10, currentPage = 1, keyword = '',
     } = ctx.query || {};
-    // 查询列表数据
-    const listData = await ctx.service.testSearchSelectList.getList({ keyword, currentPage, pageSize });
-    // 统计列表数据
-    const totalCount = (await ctx.service.testSearchSelectList.countListTotal({ keyword }))[0].count;
-    ctx.body = {
-      code: 0,
-      data: {
-        total: totalCount,
-        list: listData,
-      },
-    };
+
+    let listResult = [],
+      totalResult = 0,
+      code = 0,
+      msg = '请求成功';
+    try {
+      const { list, total } = await ctx.service.testSearchSelectList.getList({ keyword, currentPage, pageSize });
+      listResult = list;
+      totalResult = total;
+    } catch (error) {
+      msg = '服务器异常';
+      code = 1;
+    } finally {
+      // 查询列表数据
+      ctx.body = {
+        code,
+        data: {
+          total: totalResult,
+          list: listResult,
+        },
+        msg,
+      };
+    }
   }
 }
 

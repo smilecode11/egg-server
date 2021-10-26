@@ -12,6 +12,7 @@ class TestSearchSelectListService extends Service {
     pageSize,
     currentPage,
   }) {
+    //  list 数据
     const selectOption = {
       where: {
         name: keyword,
@@ -24,31 +25,26 @@ class TestSearchSelectListService extends Service {
     if (!keyword) delete selectOption.where;
     if (!pageSize) selectOption.limit = 10;
     if (!currentPage) selectOption.offset = 0;
-
     const sqlStr = `
       SELECT ${selectOption.columns.join(',')}
       FROM  interface_list
       WHERE
-        name like '%${keyword}%'
+        name like '%${keyword}%' or id like '%${keyword}%'
       ORDER BY
         ${(selectOption.orders.reduce((totalA, curr) => { totalA.push(curr.join(' ')); return totalA; }, [])).join(',')}
       LIMIT ${selectOption.limit}
       OFFSET ${selectOption.offset}
     `;
+    const listResult = await this.app.mysql.query(sqlStr);
 
-    const result = await this.app.mysql.query(sqlStr);
-    return result;
+    //  total 数据
+    let sqlCount = 'SELECT COUNT(1) AS count FROM interface_list';
+    if (keyword) sqlCount += ' where name like "%' + keyword + '%"';
+    const totalResult = (await this.app.mysql.query(sqlCount))[0].count;
+
+    return { list: listResult, total: totalResult };
   }
 
-  /** 统计*/
-  async countListTotal({
-    keyword,
-  }) {
-    let sql = 'SELECT COUNT(1) AS count FROM interface_list';
-    if (keyword) sql += ' where name like "%' + keyword + '%"';
-    const result = await this.app.mysql.query(sql);
-    return result;
-  }
 }
 
 module.exports = TestSearchSelectListService;
