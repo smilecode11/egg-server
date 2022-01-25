@@ -11,4 +11,6 @@ module.exports = app => {
   router.get('/', controller.home.index);
 
   router.get('/getList', controller.testSearchSelectList.getList);
+
+  router.get('/test/get', controller.test.get);
 };
