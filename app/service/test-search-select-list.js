@@ -45,6 +45,16 @@ class TestSearchSelectListService extends Service {
     return { list: listResult, total: totalResult };
   }
 
+  /** 获取 keyvalue 列表 */
+  async getKeyVal() {
+    
+    const sqlStr = `SELECT * from table_key_value`;
+    const keyValueResult = await this.app.mysql.query(sqlStr)
+
+    return {
+      data: keyValueResult
+    }
+  }
 }
 
 module.exports = TestSearchSelectListService;

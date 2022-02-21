@@ -17,7 +17,14 @@ class TestSearchSelectListController extends Controller {
       code = 0,
       msg = '请求成功';
     try {
-      const { list, total } = await ctx.service.testSearchSelectList.getList({ keyword, currentPage, pageSize });
+      const {
+        list,
+        total
+      } = await ctx.service.testSearchSelectList.getList({
+        keyword,
+        currentPage,
+        pageSize
+      });
       listResult = list;
       totalResult = total;
     } catch (error) {
@@ -34,6 +41,23 @@ class TestSearchSelectListController extends Controller {
         msg,
       };
     }
+  }
+
+  /** 获取 keyvalue 列表*/
+  async getKeyVal() {
+    const {
+      ctx
+    } = this;
+
+    const {
+      data
+    } = await ctx.service.testSearchSelectList.getKeyVal()
+
+    ctx.body = {
+      code: 0,
+      data
+    }
+
   }
 }
 

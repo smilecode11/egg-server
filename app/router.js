@@ -12,5 +12,7 @@ module.exports = app => {
 
   router.get('/getList', controller.testSearchSelectList.getList);
 
+  router.get('/getKeyVal',controller.testSearchSelectList.getKeyVal)
+
   router.get('/test/get', controller.test.get);
 };
